@@ -224,6 +224,19 @@ Helm é um gerenciador de pacotes para o kubernetes. Utilizaremos ele para insta
 
 Baixar a [última versão](https://github.com/helm/helm/releases) e seguir o [passo a passo](https://helm.sh/docs/intro/install/).
 
+Linux:
+
+```sh
+# Environment Vars
+export HELM_HOME=/home/marcelo/Documents/Ambiente/helm-v3.5.4
+export PATH=$HELM_HOME:$PATH
+
+# Add repo stable
+helm repo add stable https://charts.helm.sh/stable
+# Update repo
+helm repo update
+```
+
 ### Configuração
 
 Seguir [passo a passo](https://helm.sh/docs/intro/quickstart/).
@@ -243,6 +256,39 @@ O termo **service mesh** é usado para descrever a rede de microservicos que com
 ### Instalação com Helm
 
 Seguir o [passo a passo](https://istio.io/latest/docs/setup/install/helm/).
+
+Linux:
+
+```sh
+# Environment Vars
+export ISTIO_HOME=/home/marcelo/Documents/Ambiente/istio-1.9.3
+export PATH=$ISTIO_HOME/bin:$PATH
+
+# Create namespace for Istio components
+kubectl create namespace istio-system
+
+# Install Istio base chart
+helm install istio-base $ISTIO_HOME/manifests/charts/base \
+  -n istio-system
+
+# Install Istio discovery chart
+helm install istiod $ISTIO_HOME/manifests/charts/istio-control/istio-discovery \
+ -n istio-system
+
+# Install Istio ingress chart
+helm install istio-ingress $ISTIO_HOME/manifests/charts/gateways/istio-ingress \
+  -n istio-system
+
+# Install Istio egress chart
+helm install istio-egress $ISTIO_HOME/manifests/charts/gateways/istio-egress \
+  -n istio-system
+
+# Check installation
+kubectl get pods -n istio-system
+```
+
+![image](images/istio_pods.png)
+-- from <cite>author</cite>
 
 ### Instalação manual
 
