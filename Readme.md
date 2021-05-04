@@ -101,15 +101,21 @@ kubectl get pods --all-namespaces
 
 ### Objetos
 
-Os tipos de objetos são utilizados para diversas finalidades. As principais são:
+Os tipos de objetos são utilizados para diversas finalidades.
 
-- Pod - Menor unidade de deploy. Pode conter um ou mais containers. A configuração se faz através de um arquivo yaml chamado pod manifest.
+A seguir destaco os principais:
+
+#### Pod
+
+Menor unidade de deploy. Pode conter um ou mais containers. A configuração se faz através de um arquivo yaml chamado pod manifest.
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
   name: nginx-demo
+  labels:
+    web: nginx
 spec:
   containers:
     - name: nginx
@@ -142,7 +148,9 @@ kubectl describe pods nginx-demo
 ![image](images/describe_pods.png)
 -- from <cite>author</cite>
 
-- Service: Os objetos serviços dão aos pods ou deployments, a capacidade de receber um dns e também terem o service-discovery automático.
+#### Service:
+
+Os objetos serviços dão aos pods ou deployments, a capacidade de receber um dns e também terem o service-discovery automático.
 
 Exposição para o mundo externo:
 
@@ -160,3 +168,82 @@ kubectl get services
 
 ![image](images/nginx_browser.png)
 -- from <cite>author</cite>
+
+#### Deployment
+
+Um Deployment é um objeto de recurso no Kubernetes que fornece atualizações declarativas para aplicações. Além disso, ela permite descrever o ciclo de vida das aplicações, incluindo quais imagens usar, o número de pods necessários e como devem ser feitas as atualizações.
+
+Com um deployment Kubernetes, você pode:
+
+- Implantar um pod ou conjunto de réplicas
+- Atualizar pods e conjuntos de réplicas
+- Reverter para versões anteriores da implantação
+- Escalar implantações
+- Pausar ou continuar uma implantação
+
+-- from <cite>https://www.redhat.com/pt-br/topics/containers/what-is-kubernetes-deployment</cite>
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.7.9
+          ports:
+            - containerPort: 80
+```
+
+![image](images/get_deployments.png)
+-- from <cite>author</cite>
+
+#### Replicaset
+
+O propósito da ReplicaSet é configurar e manter estável o conjunto de réplicas dos pods.
+
+-- from <cite>https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/</cite>
+
+## Helm
+
+Helm é um gerenciador de pacotes para o kubernetes. Utilizaremos ele para instalação do Istio.
+
+### Instalação
+
+Baixar a [última versão](https://github.com/helm/helm/releases) e seguir o [passo a passo](https://helm.sh/docs/intro/install/).
+
+### Configuração
+
+Seguir [passo a passo](https://helm.sh/docs/intro/quickstart/).
+
+## Istio
+
+Os principais desafios quando trabalhamos monolitos e microservices estão relacionados com segurança, controle de tráfego, observabilidade e telemetria.
+
+O Istio é uma ferramenta opensource que ajuda a resolver esses problemas através da disponibilização de um **service mesh** em um cluster Kubernetes.
+
+O termo **service mesh** é usado para descrever a rede de microservicos que compoem as aplicações e as interações entre elas. Os requisitos podem incluem service discovery, load balance, métricas e monitoração, teste A/B, implantações canário, limite de tráfego, controle de acesso e autenticação de ponta a ponta.
+
+![image](images/istio.svg)
+
+-- from <cite>https://istio.io/latest/docs/concepts/what-is-istio/</cite>
+
+### Instalação com Helm
+
+Seguir o [passo a passo](https://istio.io/latest/docs/setup/install/helm/).
+
+### Instalação manual
+
+Seguir o [passo a passo](https://istio.io/latest/docs/setup/getting-started/).
