@@ -293,3 +293,25 @@ kubectl get pods -n istio-system
 ### Instalação manual
 
 Seguir o [passo a passo](https://istio.io/latest/docs/setup/getting-started/).
+
+## Demo Canário
+
+### Build das imagens
+
+- No arquivo apps/make.sh, substitua o valor da variável **YOUR_DOCKER_HUB_USER** pela sua conta.
+
+- execute o comando:
+
+  ```sh
+  sh make.sh
+  ```
+
+### Deploy do Hello App
+
+- No arquivo **k8s/hello-app-service.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
+
+- execute o comando:
+
+  ```sh
+  kubectl apply -f k8s/hello-app-service.yaml
+  ```
