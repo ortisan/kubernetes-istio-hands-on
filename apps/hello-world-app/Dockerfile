@@ -5,7 +5,7 @@ RUN apk add --update \
     && rm -rf /var/cache/apk/*
 
 WORKDIR '/app'
-COPY ./target/world-app.jar ./app.jar
+COPY ./target/hello-world-app.jar ./app.jar
 
 EXPOSE 8080
 

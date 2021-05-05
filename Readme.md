@@ -308,10 +308,52 @@ Seguir o [passo a passo](https://istio.io/latest/docs/setup/getting-started/).
 
 ### Deploy do Hello App
 
-- No arquivo **k8s/hello-app-service.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
+- No arquivo **k8s/hello-app.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
 
 - execute o comando:
 
   ```sh
-  kubectl apply -f k8s/hello-app-service.yaml
+  kubectl apply -f k8s/hello-app.yaml
   ```
+
+### Deploy do World App
+
+- No arquivo **k8s/world-app.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
+
+- execute o comando:
+
+  ```sh
+  kubectl apply -f k8s/world-app.yaml
+  ```
+
+### Deploy do Hello World App
+
+- No arquivo **k8s/hello-world-app.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
+
+- execute o comando:
+
+  ```sh
+  kubectl apply -f k8s/hello-world-app.yaml
+  ```
+
+### Disponibilizando para acesso externo
+
+No Istio, para o acesso externo, precisamos configurar o Gateway e os Virtual Servers
+
+- execute o comando:
+
+  ```sh
+  kubectl apply -f k8s/gateway.yaml
+  ```
+
+#### Obtendo o host e porta
+
+```sh
+kubectl get svc istio-ingressgateway -n istio-system
+
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo "http://$GATEWAY_URL/"
+```

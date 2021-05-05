@@ -1,0 +1,41 @@
+##################################################################################################
+# Hello App
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-app-svc
+  labels:    
+    service: hello-world-app-svc
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: hello-world-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-app-v1
+  labels:
+    app: hello-world-app
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: hello-world-app
+        version: v1
+    spec:
+      containers:
+        - name: hello-world-app
+          image: docker.io/tentativafc/helloworld-app:1.0.0-snapshot
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

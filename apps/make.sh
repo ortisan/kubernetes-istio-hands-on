@@ -31,6 +31,13 @@ docker build -t $YOUR_DOCKER_HUB_USER/world-app:1.0.0-snapshot -f Dockerfile .
 docker push $YOUR_DOCKER_HUB_USER/world-app:1.0.0-snapshot
 cd - 
 
+cd hello-world-app
+mvn clean compile package
+docker build -t $YOUR_DOCKER_HUB_USER/helloworld-app:1.0.0-snapshot -f Dockerfile .
+docker push $YOUR_DOCKER_HUB_USER/helloworld-app:1.0.0-snapshot
+cd - 
+
+
 trap : 0
 
 echo >&2 '
