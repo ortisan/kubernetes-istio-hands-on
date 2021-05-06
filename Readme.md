@@ -294,7 +294,17 @@ kubectl get pods -n istio-system
 
 Seguir o [passo a passo](https://istio.io/latest/docs/setup/getting-started/).
 
-## Demo Canário
+### Configuração do Sidecar
+
+O componente principal para o Istio é o Sidecar. Ele é responsável pelo controle, log e tráfego dos dados aos pods. A configuração se faz através do seguinte comando:
+
+```sh
+kubectl label namespace default istio-injection=enabled
+```
+
+O comando informa ao instio para injetar automaticamente o sidecar aos pods do namespade **default**.
+
+## Demo
 
 ### Build das imagens
 
@@ -358,3 +368,30 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 # Testando a chamada para hello-world app
 echo "http://$GATEWAY_URL/hello-world/say-hello-world"
 ```
+
+### Rodar o script jmeter
+
+Abrir o script **app/jmeter_script.jmx** e editar as portas e urls dos requests, conforme image a seguir.
+
+![image](images/jmeter_config.png)
+-- from <cite>author</cite>
+
+## Istio AddsOn
+
+O Istio já possui alguns complementos na sua pasta home. Os passos a seguir demonstram a instalação e visualização de cada um.
+
+```sh
+# Install addons (Prometheus, Grafana, Jaeger and Kiali):
+kubectl apply -f $ISTIO_HOME/samples/addons
+```
+
+### Kiali
+
+Kiali é uma ferramenta de visualização de **mesh** do cluster. Para acessar o dashboard, execute o comando:
+
+```sh
+istioctl dashboard kiali
+```
+
+![image](images/kiali.png)
+-- from <cite>author</cite>
