@@ -33,8 +33,8 @@ cd -
 
 cd hello-world-app
 mvn clean compile package
-docker build -t $YOUR_DOCKER_HUB_USER/helloworld-app:1.0.0-snapshot -f Dockerfile .
-docker push $YOUR_DOCKER_HUB_USER/helloworld-app:1.0.0-snapshot
+docker build -t $YOUR_DOCKER_HUB_USER/hello-world-app:1.0.0-snapshot -f Dockerfile .
+docker push $YOUR_DOCKER_HUB_USER/hello-world-app:1.0.0-snapshot
 cd - 
 
 

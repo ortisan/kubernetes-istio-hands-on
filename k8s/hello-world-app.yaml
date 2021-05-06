@@ -1,5 +1,5 @@
 ##################################################################################################
-# Hello App
+# Hello World App
 ##################################################################################################
 apiVersion: v1
 kind: Service
@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: hello-world-app
-          image: docker.io/tentativafc/helloworld-app:1.0.0-snapshot
+          image: docker.io/tentativafc/hello-world-app:1.0.0-snapshot
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

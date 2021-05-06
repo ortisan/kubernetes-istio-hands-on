@@ -16,6 +16,25 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
+  name: hello-world-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - demo-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /hello-world/
+    route:
+    - destination:
+        host: hello-world-app-svc
+        port:
+          number: 8080
+---          
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
   name: hello-vs
 spec:
   hosts:
@@ -25,7 +44,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /hello
+        prefix: /hello/
     route:
     - destination:
         host: hello-app-svc
@@ -48,25 +67,5 @@ spec:
     route:
     - destination:
         host: world-app-svc
-        port:
-          number: 8080
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: hello-world-vs
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - demo-gateway
-  http:
-  - match:
-    - uri:
-        prefix: /hello-world
-
-    route:
-    - destination:
-        host: hello-world-app-svc
         port:
           number: 8080
