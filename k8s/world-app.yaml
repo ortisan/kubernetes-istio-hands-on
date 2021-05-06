@@ -39,3 +39,29 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: world-app-v2
+  labels:
+    app: world-app
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: world-app
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: world-app
+        version: v2
+    spec:
+      containers:
+        - name: world-app
+          image: docker.io/tentativafc/world-app:2.0.0-snapshot
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

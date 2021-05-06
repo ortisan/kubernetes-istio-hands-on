@@ -355,5 +355,6 @@ export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
-echo "http://$GATEWAY_URL/"
+# Testando a chamada para hello-world app
+echo "http://$GATEWAY_URL/hello-world/say-hello-world"
 ```
