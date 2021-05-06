@@ -376,7 +376,7 @@ Abrir o script **app/jmeter_script.jmx** e editar as portas e urls dos requests,
 ![image](images/jmeter_config.png)
 -- from <cite>author</cite>
 
-## Istio AddsOn
+## Complementos Istio
 
 O Istio já possui alguns complementos na sua pasta home. Os passos a seguir demonstram a instalação e visualização de cada um.
 
