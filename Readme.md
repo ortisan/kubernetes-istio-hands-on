@@ -11,7 +11,10 @@ Kubernetes (K8s) é um produto Open Source utilizado para automatizar a implanta
 
   - [windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
 
-- Instalar [k3d](https://k3d.io/)
+
+### Linux: 
+
+- Instale o [k3d](https://k3d.io/)
 
 * Criar o cluster
 
@@ -23,6 +26,20 @@ Configurar o kubectl para o cluster k3d:
 
 ```sh
 k3d kubeconfig merge k8s-istio-handson --kubeconfig-switch-context
+```
+
+### Windows:
+
+Habilite o kubernetes no Docker desktop, conforme imagem abaixo:
+
+![image](images/kubernetes_windows.png)
+-- from <cite>author</cite>
+
+Altere o contexto do kubectl para o docker-desktop:
+
+```sh
+kubectl config get-contexts
+kubectl config use-context docker-desktop
 ```
 
 ## Kubernetes
@@ -224,22 +241,28 @@ Helm é um gerenciador de pacotes para o kubernetes. Utilizaremos ele para insta
 
 Baixar a [última versão](https://github.com/helm/helm/releases) e seguir o [passo a passo](https://helm.sh/docs/intro/install/).
 
-Linux:
+#### Linux:
 
 ```sh
 # Environment Vars
 export HELM_HOME=/home/marcelo/Documents/Ambiente/helm-v3.5.4
 export PATH=$HELM_HOME:$PATH
+```
+#### Windows:
 
+Crie a variável de ambiente como **HELM_HOME** e inclua no **PATH**
+
+### Configuração
+
+Seguir [passo a passo](https://helm.sh/docs/intro/quickstart/).
+Configure o repo stable e o atualize: 
+
+```sh
 # Add repo stable
 helm repo add stable https://charts.helm.sh/stable
 # Update repo
 helm repo update
 ```
-
-### Configuração
-
-Seguir [passo a passo](https://helm.sh/docs/intro/quickstart/).
 
 ## Istio
 
@@ -257,35 +280,43 @@ O termo **service mesh** é usado para descrever a rede de microservicos que com
 
 Seguir o [passo a passo](https://istio.io/latest/docs/setup/install/helm/).
 
-Linux:
+Baixar o Istio [1.9.3](https://github.com/istio/istio/releases/tag/1.9.3)
+
+#### Linux:
 
 ```sh
 # Environment Vars
 export ISTIO_HOME=/home/marcelo/Documents/Ambiente/istio-1.9.3
 export PATH=$ISTIO_HOME/bin:$PATH
+```
 
+#### Windows:
+
+Crie a variável de ambiente como **ISTIO_HOME** e inclua no **PATH** a configuração **%ISTIO_HOME%\bin**.
+
+#### Configuração
+
+```sh
 # Create namespace for Istio components
 kubectl create namespace istio-system
 
 # Install Istio base chart
-helm install istio-base $ISTIO_HOME/manifests/charts/base \
-  -n istio-system
+
+helm install istio-base $ISTIO_HOME/manifests/charts/base -n istio-system
 
 # Install Istio discovery chart
-helm install istiod $ISTIO_HOME/manifests/charts/istio-control/istio-discovery \
- -n istio-system
+helm install istiod $ISTIO_HOME/manifests/charts/istio-control/istio-discovery -n istio-system
 
 # Install Istio ingress chart
-helm install istio-ingress $ISTIO_HOME/manifests/charts/gateways/istio-ingress \
-  -n istio-system
+helm install istio-ingress $ISTIO_HOME/manifests/charts/gateways/istio-ingress -n istio-system
 
 # Install Istio egress chart
-helm install istio-egress $ISTIO_HOME/manifests/charts/gateways/istio-egress \
-  -n istio-system
+helm install istio-egress $ISTIO_HOME/manifests/charts/gateways/istio-egress -n istio-system
 
 # Check installation
 kubectl get pods -n istio-system
 ```
+Obs: No ambiente Windows, troque o **$ISTIO_HOME** por **%ISTIO_HOME%**
 
 ![image](images/istio_pods.png)
 -- from <cite>author</cite>
@@ -312,8 +343,14 @@ O comando informa ao instio para injetar automaticamente o sidecar aos pods do n
 
 - execute o comando:
 
+  Linux:
   ```sh
   sh make.sh
+  ```
+
+  Windows:
+  ```sh
+  make.bat
   ```
 
 ### Deploy do Hello App
