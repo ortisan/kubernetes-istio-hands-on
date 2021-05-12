@@ -5,21 +5,26 @@ Kubernetes (K8s) é um produto Open Source utilizado para automatizar a implanta
 
 ## Preparação do ambiente
 
+- Instalar o Docker
+
+  - [Linux](https://docs.docker.com/engine/install/)
+
+  - [Windows](https://docs.docker.com/docker-for-windows/install/)
+
 - Instalar o kubectl
 
-  - [linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+  - [Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 
-  - [windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
+  - [Windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
 
-
-### Linux: 
+### Linux:
 
 - Instale o [k3d](https://k3d.io/)
 
 * Criar o cluster
 
 ```sh
-k3d cluster create k8s-istio-handson --servers 1 --agents 3 --port 9080:80@loadbalancer --port 9443:443@loadbalancer --api-port 6443 --k3s-server-arg '--no-deploy=traefik'
+k3d cluster create k8s-istio-handson --servers 1 --agents 2 --port 9080:80@loadbalancer --port 9443:443@loadbalancer --api-port 6443 --k3s-server-arg '--no-deploy=traefik'
 ```
 
 Configurar o kubectl para o cluster k3d:
@@ -46,7 +51,16 @@ kubectl config use-context docker-desktop
 
 ### Client
 
-_kubectl_ é o client oficial do K8s, e utilizamos ele para interagir com os objetos, como pods, services e deployments.
+_kubectl_ é o client oficial do K8s. Através dele, interagimos com o cluster e objetos K8s, tais como pods, services, deployments...
+
+### Contextos
+
+```sh
+kubectl config get-contexts
+kubectl config use-context k3d-k8s-istio-handson
+```
+
+Link com detalhes dos arquivos kubeconfig: https://kubernetes.io/pt-br/docs/concepts/configuration/organize-cluster-access-kubeconfig/
 
 #### Cluster status
 
@@ -110,7 +124,7 @@ kubectl get services --namespace=kube-system
 
 ### Namespaces
 
-O Kubernetes usa os namespaces para organizar os objetos no cluster. Uma analogia é pensar em namespaces como pastas, onde cada pasta tenha seus respectivos objetos. Conforme imagem anterior, o Kubernetes tem seu próprio namespace chamado _kube-system_, e por default trabalhamos com o namespace _default_ para nossas aplicações.
+O Kubernetes usa os namespaces para organizar os objetos no cluster. Uma analogia é pensar em namespaces como diretórios, onde cada diretório tenha seus respectivos objetos. Conforme imagem anterior, o Kubernetes tem seu próprio namespace chamado _kube-system_, e por default trabalhamos com o namespace _default_ para nossas aplicações.
 
 ```sh
 kubectl get pods --all-namespaces
@@ -227,7 +241,7 @@ spec:
 ![image](images/get_deployments.png)
 -- from <cite>author</cite>
 
-#### Replicaset
+#### ReplicaSet
 
 O propósito da ReplicaSet é configurar e manter estável o conjunto de réplicas dos pods.
 
@@ -248,6 +262,7 @@ Baixar a [última versão](https://github.com/helm/helm/releases) e seguir o [pa
 export HELM_HOME=/home/marcelo/Documents/Ambiente/helm-v3.5.4
 export PATH=$HELM_HOME:$PATH
 ```
+
 #### Windows:
 
 Crie a variável de ambiente como **HELM_HOME** e inclua no **PATH**
@@ -255,7 +270,7 @@ Crie a variável de ambiente como **HELM_HOME** e inclua no **PATH**
 ### Configuração
 
 Seguir [passo a passo](https://helm.sh/docs/intro/quickstart/).
-Configure o repo stable e o atualize: 
+Configure o repo stable e o atualize:
 
 ```sh
 # Add repo stable
@@ -268,13 +283,40 @@ helm repo update
 
 Os principais desafios quando trabalhamos monolitos e microservices estão relacionados com segurança, controle de tráfego, observabilidade e telemetria.
 
-O Istio é uma ferramenta opensource que ajuda a resolver esses problemas através da disponibilização de um **service mesh** em um cluster Kubernetes.
+O Istio é uma ferramenta opensource que ajuda a resolver esses problemas através da disponibilização de uma **malha de serviços**(**service mesh**) em um cluster Kubernetes.
 
 O termo **service mesh** é usado para descrever a rede de microservicos que compoem as aplicações e as interações entre elas. Os requisitos podem incluem service discovery, load balance, métricas e monitoração, teste A/B, implantações canário, limite de tráfego, controle de acesso e autenticação de ponta a ponta.
 
 ![image](images/istio.svg)
 
 -- from <cite>https://istio.io/latest/docs/concepts/what-is-istio/</cite>
+
+### Componentes
+
+#### Envoy
+
+Istio usa uma extensão do Envoy Proxy. Envoy é um proxy de alta performance desenvovlido em C++ e é utilizado para mediar todo o tráfego de entrada e saida de todos os serviços na malha de serviços.
+
+Envoy é implantado como sidecar, dando as seguintes funcionalidades aos serviços:
+
+- Service Discovery Dinâmico
+- Load balancing
+- TLS
+- HTTP/2 and proxies gRPC
+- Circuit breakers
+- Health checks
+- Rollout usando porcentagem de tráfego
+- Métricas
+
+-- from <cite>https://istio.io/latest/docs/ops/deployment/architecture/</cite>
+
+#### Istiod
+
+Istiod provê service discovery (**Pilot**), configuração(**Citadel**) e gerenciamento de certificados(**Galley**).
+
+Istiod também converte as regras de roteamente e controla o controle de tráfego para os sidecars em runtime.
+
+-- from <cite>https://istio.io/latest/docs/ops/deployment/architecture/</cite>
 
 ### Instalação com Helm
 
@@ -316,6 +358,7 @@ helm install istio-egress $ISTIO_HOME/manifests/charts/gateways/istio-egress -n 
 # Check installation
 kubectl get pods -n istio-system
 ```
+
 Obs: No ambiente Windows, troque o **$ISTIO_HOME** por **%ISTIO_HOME%**
 
 ![image](images/istio_pods.png)
@@ -333,7 +376,7 @@ O componente principal para o Istio é o Sidecar. Ele é responsável pelo contr
 kubectl label namespace default istio-injection=enabled
 ```
 
-O comando informa ao instio para injetar automaticamente o sidecar aos pods do namespade **default**.
+O comando informa ao Istio para injetar automaticamente o sidecar aos pods do namespace **default**.
 
 ## Demo
 
@@ -344,11 +387,13 @@ O comando informa ao instio para injetar automaticamente o sidecar aos pods do n
 - execute o comando:
 
   Linux:
+
   ```sh
   sh make.sh
   ```
 
   Windows:
+
   ```sh
   make.bat
   ```
@@ -428,6 +473,17 @@ Kiali é uma ferramenta de visualização de **mesh** do cluster. Para acessar o
 
 ```sh
 istioctl dashboard kiali
+```
+
+![image](images/kiali.png)
+-- from <cite>author</cite>
+
+### Jaeger
+
+Jaeger é uma ferramenta de trace das aplicações. Através de um traceid, ele agrupa toda a stack de chamadas. Para visualiza-lo, utilize o seguinte comando:
+
+```sh
+istioctl dashboard jaeger
 ```
 
 ![image](images/kiali.png)
