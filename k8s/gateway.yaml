@@ -28,7 +28,7 @@ spec:
         prefix: /hello-world/
     route:
     - destination:
-        host: hello-world-app-dr
+        host: hello-world-app-svc
         port:
           number: 8080
 ---          
