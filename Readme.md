@@ -486,5 +486,5 @@ Jaeger é uma ferramenta de trace das aplicações. Através de um traceid, ele 
 istioctl dashboard jaeger
 ```
 
-![image](images/kiali.png)
+![image](images/jaeger.png)
 -- from <cite>author</cite>
