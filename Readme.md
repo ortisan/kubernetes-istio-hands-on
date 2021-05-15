@@ -350,7 +350,7 @@ helm install istio-base $ISTIO_HOME/manifests/charts/base -n istio-system
 helm install istiod $ISTIO_HOME/manifests/charts/istio-control/istio-discovery -n istio-system
 
 # Install Istio ingress chart
-helm install istio-ingress $ISTIO_HOME/manifests/charts/gateways/istio-ingress -n istio-system
+helm install istio-ingress manifests/charts/gateways/istio-ingress -n istio-system
 
 # Install Istio egress chart
 helm install istio-egress $ISTIO_HOME/manifests/charts/gateways/istio-egress -n istio-system
@@ -380,7 +380,24 @@ O comando informa ao Istio para injetar automaticamente o sidecar aos pods do na
 
 ## Demo
 
-### Build das imagens
+Essa demo possui a seguinte arquitetura:
+
+![image](images/demo_arquitetura.png)
+-- from <cite>author</cite>
+
+#### Hello App
+
+Possui webservice que retorna "Hello". Imagem já disponível no **[Docker Hub](https://hub.docker.com/r/tentativafc/hello-app/tags?page=1&ordering=last_updated)**.
+
+#### World App
+
+Possui webservice que retorna "World". Um diferencial desta aplicação é que ela possui uma propriedade (**application.percentual_erro=50**) indicando a porcentagem de erros. A proposta é simular um deploy com algum problema. A **v1** não contém erros e a **v2** possui 50% de chances de dar erro. Ambas imagens já disponíveis no **[Docker Hub](https://hub.docker.com/r/tentativafc/world-app/tags?page=1&ordering=last_updated)**.
+
+#### Hello World App
+
+A aplicação orquestra as chamadas da **Hello App** e **World App**, concatenando o retorno das duas APIs. Imagem já disponível no **[Docker Hub](https://hub.docker.com/r/tentativafc/helloworld-app/tags?page=1&ordering=last_updated)**.
+
+### Build das imagens (Opcional)
 
 - No arquivo apps/make.sh, substitua o valor da variável **YOUR_DOCKER_HUB_USER** pela sua conta.
 
@@ -480,11 +497,11 @@ istioctl dashboard kiali
 
 ### Jaeger
 
-Jaeger é uma ferramenta de trace das aplicações. Através de um traceid, ele agrupa toda a stack de chamadas. Para visualiza-lo, utilize o seguinte comando:
+[Jaeger](https://www.jaegertracing.io/docs/) é uma ferramenta de trace distribuído das aplicações. Através de um traceid, ele agrupa toda a stack de chamadas. Para visualizá-lo, utilize o seguinte comando:
 
 ```sh
 istioctl dashboard jaeger
 ```
 
-![image](images/kiali.png)
+![image](images/jaeger.png)
 -- from <cite>author</cite>
