@@ -19,17 +19,17 @@ set -e
 YOUR_DOCKER_HUB_USER=tentativafc
 
 ## Building services
-cd hello-app
-mvn clean compile package
-docker build -t $YOUR_DOCKER_HUB_USER/hello-app:1.0.0-snapshot -f Dockerfile .
-docker push $YOUR_DOCKER_HUB_USER/hello-app:1.0.0-snapshot
-cd - 
+# cd hello-app
+# mvn clean compile package
+# docker build -t $YOUR_DOCKER_HUB_USER/hello-app:1.0.0-snapshot -f Dockerfile .
+# docker push $YOUR_DOCKER_HUB_USER/hello-app:1.0.0-snapshot
+# cd - 
 
-cd world-app
-mvn clean compile package
-docker build -t $YOUR_DOCKER_HUB_USER/world-app:1.0.0-snapshot -f Dockerfile .
-docker push $YOUR_DOCKER_HUB_USER/world-app:1.0.0-snapshot
-cd - 
+# cd world-app
+# mvn clean compile package
+# docker build -t $YOUR_DOCKER_HUB_USER/world-app:2.0.0-snapshot -f Dockerfile .
+# docker push $YOUR_DOCKER_HUB_USER/world-app:2.0.0-snapshot
+# cd - 
 
 cd hello-world-app
 mvn clean compile package

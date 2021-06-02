@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: world-app-svc
+spec:
+  hosts:
+    - world-app-svc
+  http:
+  - route:
+    - destination:
+        host: world-app-svc
+        subset: v2
+      weight: 100

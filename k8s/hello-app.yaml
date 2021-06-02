@@ -14,6 +14,7 @@ spec:
   selector:
     app: hello-app
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,4 +40,4 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-            
+

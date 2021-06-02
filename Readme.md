@@ -200,6 +200,13 @@ kubectl get services
 ![image](images/nginx_browser.png)
 -- from <cite>author</cite>
 
+Após o teste, remover o service loadbalancer:
+
+```sh
+# Delete svc
+kubectl delete svc nginx-demo
+```
+
 #### Deployment
 
 Um Deployment é um objeto de recurso no Kubernetes que fornece atualizações declarativas para aplicações. Além disso, ela permite descrever o ciclo de vida das aplicações, incluindo quais imagens usar, o número de pods necessários e como devem ser feitas as atualizações.
@@ -343,14 +350,13 @@ Crie a variável de ambiente como **ISTIO_HOME** e inclua no **PATH** a configur
 kubectl create namespace istio-system
 
 # Install Istio base chart
-
 helm install istio-base $ISTIO_HOME/manifests/charts/base -n istio-system
 
 # Install Istio discovery chart
 helm install istiod $ISTIO_HOME/manifests/charts/istio-control/istio-discovery -n istio-system
 
 # Install Istio ingress chart
-helm install istio-ingress manifests/charts/gateways/istio-ingress -n istio-system
+helm install istio-ingress $ISTIO_HOME/manifests/charts/gateways/istio-ingress -n istio-system
 
 # Install Istio egress chart
 helm install istio-egress $ISTIO_HOME/manifests/charts/gateways/istio-egress -n istio-system
@@ -458,8 +464,6 @@ No Istio, para o acesso externo, precisamos configurar o Gateway e os Virtual Se
 #### Obtendo o host e porta
 
 ```sh
-kubectl get svc istio-ingressgateway -n istio-system
-
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
@@ -470,9 +474,11 @@ echo "http://$GATEWAY_URL/hello-world/say-hello-world"
 
 ### Rodar o script jmeter
 
-Abrir o script **app/jmeter_script.jmx** e editar as portas e urls dos requests, conforme image a seguir.
+No arquivo csv **app/jmeter_config.csv** configure o host e a porta com os respectivos valores das variáveis **\$INGRESS_HOST** e **\$INGRESS_PORT**.
 
-![image](images/jmeter_config.png)
+Execute o jmeter utiilzando o script **app/jmeter_config.jmx**
+
+![image](images/jmeter.png)
 -- from <cite>author</cite>
 
 ## Complementos Istio
@@ -504,4 +510,15 @@ istioctl dashboard jaeger
 ```
 
 ![image](images/jaeger.png)
+-- from <cite>author</cite>
+
+### Grafana
+
+[Grafana](https://grafana.com/) é uma ferramenta de observality. Esse complemento já pré configura alguns dashboards com as métricas coletadas pelo sidecar Istio.
+
+```sh
+istioctl dashboard grafana
+```
+
+![image](images/grafana.png)
 -- from <cite>author</cite>
