@@ -24,7 +24,7 @@ Kubernetes (K8s) é um produto Open Source utilizado para automatizar a implanta
 * Criar o cluster
 
 ```sh
-k3d cluster create k8s-istio-handson --servers 1 --agents 2 --port 9080:80@loadbalancer --port 9443:443@loadbalancer --api-port 6443 --k3s-server-arg '--no-deploy=traefik'
+k3d cluster create k8s-istio-handson --servers 1 --agents 1 --port 9080:80@loadbalancer --port 9443:443@loadbalancer --api-port 6443 --k3s-server-arg '--no-deploy=traefik'
 ```
 
 Configurar o kubectl para o cluster k3d:
@@ -292,7 +292,7 @@ Os principais desafios quando trabalhamos monolitos e microservices estão relac
 
 O Istio é uma ferramenta opensource que ajuda a resolver esses problemas através da disponibilização de uma **malha de serviços**(**service mesh**) em um cluster Kubernetes.
 
-O termo **service mesh** é usado para descrever a rede de microservicos que compoem as aplicações e as interações entre elas. Os requisitos podem incluem service discovery, load balance, métricas e monitoração, teste A/B, implantações canário, limite de tráfego, controle de acesso e autenticação de ponta a ponta.
+O termo **service mesh** é usado para descrever a rede de microservicos que compoem as aplicações e as interações entre elas. Os requisitos incluem service discovery, load balance, métricas e monitoração, teste A/B, implantações canário, limite de tráfego, controle de acesso e autenticação de ponta a ponta.
 
 ![image](images/istio.svg)
 
