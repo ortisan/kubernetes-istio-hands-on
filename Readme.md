@@ -405,7 +405,7 @@ A aplicação orquestra as chamadas da **Hello App** e **World App**, concatenan
 
 ### Build das imagens (Opcional)
 
-- No arquivo apps/make.sh, substitua o valor da variável **YOUR_DOCKER_HUB_USER** pela sua conta.
+- No arquivo **apps/make.sh**, substitua o valor da variável **YOUR_DOCKER_HUB_USER** pela sua conta.
 
 - execute o comando:
 
@@ -423,7 +423,7 @@ A aplicação orquestra as chamadas da **Hello App** e **World App**, concatenan
 
 ### Deploy do Hello App
 
-- No arquivo **k8s/hello-app.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
+- No arquivo **k8s/hello-app.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
 
 - execute o comando:
 
@@ -433,7 +433,7 @@ A aplicação orquestra as chamadas da **Hello App** e **World App**, concatenan
 
 ### Deploy do World App
 
-- No arquivo **k8s/world-app.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
+- No arquivo **k8s/world-app.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
 
 - execute o comando:
 
@@ -443,7 +443,7 @@ A aplicação orquestra as chamadas da **Hello App** e **World App**, concatenan
 
 ### Deploy do Hello World App
 
-- No arquivo **k8s/hello-world-app.yaml**, substitua o valor **YOUR_DOCKER_HUB_USER** pelo seu usuário do Docker Hub.
+- No arquivo **k8s/hello-world-app.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
 
 - execute o comando:
 
@@ -522,3 +522,39 @@ istioctl dashboard grafana
 
 ![image](images/grafana.png)
 -- from <cite>author</cite>
+
+## Horizontal Autoscaling
+
+Através da análise de métricas dos pods, o K8S possui um recurso destinado ao scaling horizontal dos pods.
+
+O [Metric Server](https://github.com/kubernetes-sigs/metrics-server) é um recurso instalado separadamente e funciona como um coletor de métricas. Através dessas métricas coletadas, podemos criar regras de autoscaling através da configuracao HPA.
+
+### Instalacao Metric Server
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl get pods -n kube-system
+
+### Demo
+
+```sh
+# Instalaćão da aplicacao de exemplo
+kubectl apply -f k8s/hpa.yaml
+
+# Criacao manual do hpa para a aplicacao de exeplo
+kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+
+# Listagem dos objetos hpa
+kubectl get hpa
+
+# Forcando uma carga
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+
+
+kubectl get hpa
+```
+
+```sh
+# Instalacao com podmanifest
+kubectl apply -f ./k8s/hpa-v2.yaml
+```

@@ -6,8 +6,8 @@ spec:
   hosts:
     - world-app-svc
   http:
-  - route:
-    - destination:
-        host: world-app-svc
-        subset: v2
-      weight: 100
+    - route:
+        - destination:
+            host: world-app-svc
+            subset: v2
+          weight: 100

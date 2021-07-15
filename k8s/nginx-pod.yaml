@@ -10,4 +10,3 @@ spec:
       image: nginx:1.19.10
       ports:
         - containerPort: 80
-        
