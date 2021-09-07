@@ -558,3 +558,38 @@ kubectl get hpa
 # Instalacao com podmanifest
 kubectl apply -f ./k8s/hpa-v2.yaml
 ```
+
+## Controle de deployments
+
+Um dos desafios do Countinous Delivery é garantir que o software com as novas features, funcionem corretamente.
+Há a necessidade portanto de estruturas de deployments que garantam a entrega das novas funcionalidades, que essas entregas não gerem indisponibilidade, que ocorram um teste pilotado em produćão, e caso tudo esteja de acordo com os critérios de aceite, ocorra a liberaćão da nova versão para o restante do público.
+
+Abordaremos aqui os dois modelos de deployments mais utilizados no mercado.
+
+### [Blue Green](https://martinfowler.com/bliki/BlueGreenDeployment.html)
+
+O Deployment Blue Green parte da premissa que devemos sempre ter disponíveis dois ambientes. O primeiro (chamaremos de Blue) com a versão atual da aplicaćão, e o segundo (Green) com a nova versão da aplicaćão. Após o deployment, todo o tráfego é direcionado para a nova aplicaćão (Green) e caso se identifique-se problemas, o tráfego é direcionado novamente para a versão anterior da aplicaćão (Blue).
+
+![image](images/blue-green.png)
+-- from <cite>https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/bluegreen-deployments.html</cite>
+
+Com o Istio, podemos ter esse modelo de deployment através da disponibilizaćão de pesos no tráfego para as versões da aplicaćão.
+
+#### Demo
+ 
+### Canário
+
+O Deployment Canário, também ocorre a dispobilizaćão dos dois ambientes (Blue e Green), porém somente uma pequena parte do tráfego é direcionado para nova versão. Nesse modelo pode-se adotar uma porcentagem do tráfego ou também podemos utilizar outras informaćões como Http Headers para a utilizacão dos beta testers.
+
+![image](images/blue-green.png)
+-- from <cite>https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/bluegreen-deployments.html</cite>
+
+Demo:
+
+### [Istio](https://istio.io/latest/blog/2017/0.1-canary/)
+
+
+
+### Flagger
+
+

@@ -9,5 +9,9 @@ spec:
     - route:
         - destination:
             host: world-app-svc
-            subset: v2
+            subset: v1
           weight: 100
+        # - destination:
+        #     host: world-app-svc
+        #     subset: v2
+        #   weight: 0
