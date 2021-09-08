@@ -649,10 +649,13 @@ Manual:
 kubectl apply -k github.com/fluxcd/flagger//kustomize/istio
 ```
 
-172.18.0.2
+#### Demo
 
+
+```sh
 kubectl apply -f k8s/world-with-flagger.yaml
 
 kubectl apply -f k8s/world-with-flagger-gateway.yaml
 
-kubectl apply -f k8s/world-canary.yaml
+kubectl apply -f k8s/world-with-flagger-canary.yaml
+```

@@ -72,7 +72,7 @@
           <stringProp name="HTTPSampler.port">${porta}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-          <stringProp name="HTTPSampler.path">/world-flagger/say-world</stringProp>
+          <stringProp name="HTTPSampler.path">/world-flagger/world/say-world</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

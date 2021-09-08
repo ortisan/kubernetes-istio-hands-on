@@ -65,7 +65,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /world
+        prefix: /world/
     route:
     - destination:
         host: world-app-svc

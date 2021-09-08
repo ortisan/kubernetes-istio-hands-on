@@ -14,7 +14,7 @@ spec:
     kind: HorizontalPodAutoscaler
     name: world-app-flagger
   service:
-    name: world-app-svc-flagger
+    name: world-app-flagger
     port: 8080
     portName: http
     targetPort: 8080

@@ -1,19 +1,19 @@
 ##################################################################################################
 # World App Flagger
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: world-app-svc-flagger
-  labels:
-    service: world-app-svc-flagger
-spec:
-  ports:
-    - port: 8080
-      name: http
-  selector:
-    app: world-app-flagger
----
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: world-app-svc-flagger
+#   labels:
+#     service: world-app-svc-flagger
+# spec:
+#   ports:
+#     - port: 8080
+#       name: http
+#   selector:
+#     app: world-app-flagger
+# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,7 +38,7 @@ spec:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "-1"
+              value: "-10"
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
