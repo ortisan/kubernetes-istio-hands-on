@@ -27,7 +27,7 @@ Kubernetes (K8s) é um produto Open Source utilizado para automatizar a implanta
 k3d cluster create k8s-istio-handson --servers 1 --agents 1 --port 9080:80@loadbalancer --port 9443:443@loadbalancer --api-port 6443 --k3s-server-arg '--no-deploy=traefik'
 ```
 
-Configurar o kubectl para o cluster k3d:
+Cria o kubeconfig e configura o contexto para o kubectl:
 
 ```sh
 k3d kubeconfig merge k8s-istio-handson --kubeconfig-switch-context
@@ -575,6 +575,24 @@ O Deployment Blue Green parte da premissa que devemos sempre ter disponíveis do
 
 Com o Istio, podemos ter esse modelo de deployment através da disponibilizaćão de pesos no tráfego para as versões da aplicaćão.
 
+```yaml
+    gateway.yaml
+    ...    
+    route:
+    - destination:
+        host: world-app-svc
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
+    - destination:
+        host: world-app-svc
+        port:
+          number: 8080
+        subset: v2
+      weight: 0
+```
+
 #### Demo
  
 ### Canário
@@ -588,8 +606,53 @@ Demo:
 
 ### [Istio](https://istio.io/latest/blog/2017/0.1-canary/)
 
-
+```yaml
+    gateway.yaml
+    ...    
+    route:
+    - destination:
+        host: world-app-svc
+        port:
+          number: 8080
+        subset: v1
+      weight: 100
+    - destination:
+        host: world-app-svc
+        port:
+          number: 8080
+        subset: v2
+      weight: 0
+```
 
 ### Flagger
 
+#### [Instalaćão](https://docs.flagger.app/install/flagger-install-on-kubernetes):
 
+Helm:
+
+```sh
+# Repo
+helm repo add flagger https://flagger.app
+# CRD
+kubectl apply -f https://raw.githubusercontent.com/fluxcd/flagger/main/artifacts/flagger/crd.yaml
+# Deploy with istio
+helm upgrade -i flagger flagger/flagger \
+--namespace=istio-system \
+--set crd.create=false \
+--set meshProvider=istio \
+--set metricsServer=http://prometheus:9090
+```
+
+Manual:
+
+```sh
+kubectl apply -k github.com/fluxcd/flagger//kustomize/istio
+```
+
+172.18.0.2
+
+kubectl apply -f k8s/world-with-flagger.yaml
+
+kubectl apply -f k8s/world-with-flagger-gateway.yaml
+
+kubectl apply -f k8s/world-canary.yaml

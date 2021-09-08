@@ -70,4 +70,4 @@ spec:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "5"
+              value: "90"

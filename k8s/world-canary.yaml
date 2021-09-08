@@ -1,0 +1,33 @@
+---
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: world-app-flagger
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: world-app-flagger
+  progressDeadlineSeconds: 60
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta1
+    kind: HorizontalPodAutoscaler
+    name: world-app-flagger
+  service:
+    name: world-app-svc-flagger
+    port: 8080
+    portName: http
+    targetPort: 8080
+    portDiscovery: true
+  analysis:
+    interval: 30s
+    threshold: 10
+    maxWeight: 50
+    stepWeight: 5
+    metrics:
+    - name: request-success-rate
+      threshold: 99
+      interval: 30s
+    - name: request-duration
+      threshold: 500
+      interval: 30s
