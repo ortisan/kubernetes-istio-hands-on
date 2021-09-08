@@ -1,3 +1,33 @@
+# apiVersion: flagger.app/v1beta1
+# kind: MetricTemplate
+# metadata:
+#   name: error-metric
+#   namespace: istio-system
+# spec:
+#   provider:
+#     type: prometheus
+#     address: http://prometheus.istio-system:9090
+#   query: |
+#     100 - sum(
+#         rate(
+#             istio_requests_total{
+#               reporter="destination",
+#               destination_workload_namespace="{{ namespace }}",
+#               destination_workload="{{ target }}",
+#               response_code!="200"
+#             }[{{ interval }}]
+#         )
+#     )
+#     /
+#     sum(
+#         rate(
+#             istio_requests_total{
+#               reporter="destination",
+#               destination_workload_namespace="{{ namespace }}",
+#               destination_workload="{{ target }}"
+#             }[{{ interval }}]
+#         )
+#     ) * 100
 ---
 apiVersion: flagger.app/v1beta1
 kind: Canary
@@ -23,11 +53,17 @@ spec:
     interval: 30s
     threshold: 10
     maxWeight: 50
-    stepWeight: 5
-    metrics:
-    - name: request-success-rate
-      threshold: 99
-      interval: 30s
-    - name: request-duration
-      threshold: 500
-      interval: 30s
+    stepWeight: 20
+    # metrics:
+    # - name: request-success-rate
+    #   threshold: 99
+    #   interval: 30s
+    # - name: request-duration
+    #   threshold: 500
+    #   interval: 30s
+    # webhooks:
+    # - name: load-test
+    #   url: http://flagger-loadtester.test/
+    #   timeout: 5s
+    #   metadata:
+    #     cmd: "hey -z 1m -q 10 -c 2 http://world-app-flagger-canary:8080/world/say-world"

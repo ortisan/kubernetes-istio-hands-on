@@ -15,7 +15,7 @@ spec:
       uri: /
     route:
     - destination:
-        host: world-app-flagger
-        # host: world-app-flagger.default.svc.cluster.local
+        # host: world-app-flagger
+        host: world-app-flagger.default.svc.cluster.local
         port:
           number: 8080

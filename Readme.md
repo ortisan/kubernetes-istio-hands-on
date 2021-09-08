@@ -659,3 +659,16 @@ kubectl apply -f k8s/world-with-flagger-gateway.yaml
 
 kubectl apply -f k8s/world-with-flagger-canary.yaml
 ```
+
+#### Status
+
+
+```sh
+kubectl -n istio-system logs deployment/flagger --tail=100 | jq .msg
+
+kubectl get canaries --all-namespaces
+
+kubectl -n default get canary/world-app-flagger -oyaml | awk '/status/,0'
+
+kubectl wait canary/world-app-flagger --for=condition=promoted
+```

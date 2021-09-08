@@ -38,7 +38,7 @@ spec:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "-10"
+              value: "-1"
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
