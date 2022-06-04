@@ -1,7 +1,7 @@
 # Kubernetes e Istio Hands On
 
 Kubernetes (K8s) é um produto Open Source utilizado para automatizar a implantação, o dimensionamento e o gerenciamento de aplicativos em contêiner
--- <cite>https://kubernetes.io</cite>
+-- <cite><https://kubernetes.io></cite>
 
 ## Preparação do ambiente
 
@@ -17,14 +17,18 @@ Kubernetes (K8s) é um produto Open Source utilizado para automatizar a implanta
 
   - [Windows](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
 
-### Linux:
+### Linux
 
 - Instale o [k3d](https://k3d.io/)
 
-* Criar o cluster
+- Criar o cluster
 
 ```sh
+# k3d Version < 5.0
 k3d cluster create k8s-istio-handson --servers 1 --agents 1 --port 9080:80@loadbalancer --port 9443:443@loadbalancer --api-port 6443 --k3s-server-arg '--no-deploy=traefik'
+
+# k3d Version >= 5.0
+k3d cluster create k8s-istio-handson --servers 1 --agents 1 --port 9080:80@loadbalancer --port 9443:443@loadbalancer --api-port 6443 --k3s-arg "--disable=traefik@server:0"
 ```
 
 Cria o kubeconfig e configura o contexto para o kubectl:
@@ -33,7 +37,7 @@ Cria o kubeconfig e configura o contexto para o kubectl:
 k3d kubeconfig merge k8s-istio-handson --kubeconfig-switch-context
 ```
 
-### Windows:
+### Windows
 
 Habilite o kubernetes no Docker desktop, conforme imagem abaixo:
 
@@ -60,7 +64,7 @@ kubectl config get-contexts
 kubectl config use-context k3d-k8s-istio-handson
 ```
 
-Link com detalhes dos arquivos kubeconfig: https://kubernetes.io/pt-br/docs/concepts/configuration/organize-cluster-access-kubeconfig/
+Link com detalhes dos arquivos kubeconfig: <https://kubernetes.io/pt-br/docs/concepts/configuration/organize-cluster-access-kubeconfig/>
 
 #### Cluster status
 
@@ -74,13 +78,13 @@ kubectl get componentstatuses
 ### [Componentes do Cluster](https://kubernetes.io/pt-br/docs/concepts/overview/components/)
 
 ![image](images/components-of-kubernetes.svg)
--- from <cite>https://kubernetes.io/pt-br/docs/concepts/overview/components/</cite>
+-- from <cite><https://kubernetes.io/pt-br/docs/concepts/overview/components/></cite>
 
 Um cluster Kubernetes consiste em um conjunto de servidores de processamento, chamados nós, que executam aplicações containerizadas. Todo cluster possui ao menos um servidor de processamento (worker node).
 
 O servidor de processamento hospeda os Pods que são componentes de uma aplicação. O ambiente de gerenciamento gerencia os nós de processamento e os Pods no cluster. Em ambientes de produção, o ambiente de gerenciamento geralmente executa em múltiplos computadores e um cluster geralmente executa em múltiplos nós (nodes), provendo tolerância a falhas e alta disponibilidade.
 
--- from <cite>https://kubernetes.io/pt-br/docs/concepts/overview/components/</cite>
+-- from <cite><https://kubernetes.io/pt-br/docs/concepts/overview/components/></cite>
 
 #### Control Plane
 
@@ -128,6 +132,8 @@ O Kubernetes usa os namespaces para organizar os objetos no cluster. Uma analogi
 
 ```sh
 kubectl get pods --all-namespaces
+#ou
+kubectl get pods -A
 ```
 
 ### Objetos
@@ -179,7 +185,7 @@ kubectl describe pods nginx-demo
 ![image](images/describe_pods.png)
 -- from <cite>author</cite>
 
-#### Service:
+#### Service
 
 Os objetos serviços dão aos pods ou deployments, a capacidade de receber um dns e também terem o service-discovery automático.
 
@@ -219,7 +225,7 @@ Com um deployment Kubernetes, você pode:
 - Escalar implantações
 - Pausar ou continuar uma implantação
 
--- from <cite>https://www.redhat.com/pt-br/topics/containers/what-is-kubernetes-deployment</cite>
+-- from <cite><https://www.redhat.com/pt-br/topics/containers/what-is-kubernetes-deployment></cite>
 
 ```yaml
 apiVersion: apps/v1
@@ -252,7 +258,7 @@ spec:
 
 O propósito da ReplicaSet é configurar e manter estável o conjunto de réplicas dos pods.
 
--- from <cite>https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/</cite>
+-- from <cite><https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/></cite>
 
 ## Helm
 
@@ -262,7 +268,7 @@ Helm é um gerenciador de pacotes para o kubernetes. Utilizaremos ele para insta
 
 Baixar a [última versão](https://github.com/helm/helm/releases) e seguir o [passo a passo](https://helm.sh/docs/intro/install/).
 
-#### Linux:
+#### Linux
 
 ```sh
 # Environment Vars
@@ -270,7 +276,7 @@ export HELM_HOME=/home/marcelo/Documents/Ambiente/helm-v3.5.4
 export PATH=$HELM_HOME:$PATH
 ```
 
-#### Windows:
+#### Windows
 
 Crie a variável de ambiente como **HELM_HOME** e inclua no **PATH**
 
@@ -296,7 +302,7 @@ O termo **service mesh** é usado para descrever a rede de microservicos que com
 
 ![image](images/istio.svg)
 
--- from <cite>https://istio.io/latest/docs/concepts/what-is-istio/</cite>
+-- from <cite><https://istio.io/latest/docs/concepts/what-is-istio/></cite>
 
 ### Componentes
 
@@ -315,7 +321,7 @@ Envoy é implantado como sidecar, dando as seguintes funcionalidades aos serviç
 - Rollout usando porcentagem de tráfego
 - Métricas
 
--- from <cite>https://istio.io/latest/docs/ops/deployment/architecture/</cite>
+-- from <cite><https://istio.io/latest/docs/ops/deployment/architecture/></cite>
 
 #### Istiod
 
@@ -323,15 +329,15 @@ Istiod provê service discovery (**Pilot**), configuração(**Citadel**) e geren
 
 Istiod também converte as regras de roteamente e controla o controle de tráfego para os sidecars em runtime.
 
--- from <cite>https://istio.io/latest/docs/ops/deployment/architecture/</cite>
+-- from <cite><https://istio.io/latest/docs/ops/deployment/architecture/></cite>
 
 ### Instalação com Helm
 
 Seguir o [passo a passo](https://istio.io/latest/docs/setup/install/helm/).
 
-Baixar o Istio [1.9.3](https://github.com/istio/istio/releases/tag/1.9.3)
+Baixar o Istio [1.14.0](https://github.com/istio/istio/releases/tag/1.14.0)
 
-#### Linux:
+#### Linux
 
 ```sh
 # Environment Vars
@@ -339,7 +345,7 @@ export ISTIO_HOME=/home/marcelo/Documents/Ambiente/istio-1.9.3
 export PATH=$ISTIO_HOME/bin:$PATH
 ```
 
-#### Windows:
+#### Windows
 
 Crie a variável de ambiente como **ISTIO_HOME** e inclua no **PATH** a configuração **%ISTIO_HOME%\bin**.
 
@@ -423,32 +429,35 @@ A aplicação orquestra as chamadas da **Hello App** e **World App**, concatenan
 
 ### Deploy do Hello App
 
-- No arquivo **k8s/hello-app.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
+- No arquivo **k8s/app-hello.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
 
 - execute o comando:
 
   ```sh
-  kubectl apply -f k8s/hello-app.yaml
+  kubectl apply -f k8s/app-hello.yaml
   ```
 
 ### Deploy do World App
 
-- No arquivo **k8s/world-app.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
+- No arquivo **k8s/app-world.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
 
 - execute o comando:
 
   ```sh
-  kubectl apply -f k8s/world-app.yaml
+  # Versão sem erros
+  kubectl apply -f k8s/app-world-v1.yaml
+  # Versão com 50% erros. Utilizaremos essa versão nos controles de deploys (Blue Green e Canary)
+  kubectl apply -f k8s/app-world-v2.yaml
   ```
 
 ### Deploy do Hello World App
 
-- No arquivo **k8s/hello-world-app.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
+- No arquivo **k8s/app-hello-world.yaml**, substitua o valor **tentativafc** pelo seu usuário do Docker Hub (Opcional).
 
 - execute o comando:
 
   ```sh
-  kubectl apply -f k8s/hello-world-app.yaml
+  kubectl apply -f k8s/app-hello-world.yaml
   ```
 
 ### Disponibilizando para acesso externo
@@ -468,15 +477,17 @@ export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo "Ingress Host: $INGRESS_HOST"
+echo "Ingress Port: $INGRESS_PORT"
 # Testando a chamada para hello-world app
-echo "http://$GATEWAY_URL/hello-world/say-hello-world"
+echo "Url Test: http://$GATEWAY_URL/hello-world/say-hello-world"
 ```
 
 ### Rodar o script jmeter
 
 No arquivo csv **app/jmeter_config.csv** configure o host e a porta com os respectivos valores das variáveis **\$INGRESS_HOST** e **\$INGRESS_PORT**.
 
-Execute o jmeter utiilzando o script **app/jmeter_config.jmx**
+Execute o jmeter utilizando o script **app/jmeter_config.jmx**
 
 ![image](images/jmeter.png)
 -- from <cite>author</cite>
@@ -529,19 +540,21 @@ Através da análise de métricas dos pods, o K8S possui um recurso destinado ao
 
 O [Metric Server](https://github.com/kubernetes-sigs/metrics-server) é um recurso instalado separadamente e funciona como um coletor de métricas. Através dessas métricas coletadas, podemos criar regras de autoscaling através da configuracao HPA.
 
-### Instalacao Metric Server
+### Instalação Metric Server
 
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```sh
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/metrics-server-helm-chart-3.8.2/components.yaml
+```
 
 kubectl get pods -n kube-system
 
 ### Demo
 
 ```sh
-# Instalaćão da aplicacao de exemplo
+# Instalação da aplicação de exemplo
 kubectl apply -f k8s/hpa.yaml
 
-# Criacao manual do hpa para a aplicacao de exeplo
+# Criação manual do hpa para a aplicação de exeplo
 kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
 
 # Listagem dos objetos hpa
@@ -554,6 +567,9 @@ kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin
 kubectl get hpa
 ```
 
+![image](images/hpa.png)
+-- from <cite>author</cite>
+
 ```sh
 # Instalacao com podmanifest
 kubectl apply -f ./k8s/hpa-v2.yaml
@@ -562,45 +578,68 @@ kubectl apply -f ./k8s/hpa-v2.yaml
 ## Controle de deployments
 
 Um dos desafios do Countinous Delivery é garantir que o software com as novas features, funcionem corretamente.
-Há a necessidade portanto de estruturas de deployments que garantam a entrega das novas funcionalidades, que essas entregas não gerem indisponibilidade, que ocorram um teste pilotado em produćão, e caso tudo esteja de acordo com os critérios de aceite, ocorra a liberaćão da nova versão para o restante do público.
+Há a necessidade portanto de estruturas de deployments que garantam a entrega das novas funcionalidades, que essas entregas não gerem indisponibilidade, que ocorram um teste pilotado em produção, e caso tudo esteja de acordo com os critérios de aceite, ocorra a liberaćão da nova versão para o restante do público.
 
 Abordaremos aqui os dois modelos de deployments mais utilizados no mercado.
 
 ### [Blue Green](https://martinfowler.com/bliki/BlueGreenDeployment.html)
 
-O Deployment Blue Green parte da premissa que devemos sempre ter disponíveis dois ambientes. O primeiro (chamaremos de Blue) com a versão atual da aplicaćão, e o segundo (Green) com a nova versão da aplicaćão. Após o deployment, todo o tráfego é direcionado para a nova aplicaćão (Green) e caso se identifique-se problemas, o tráfego é direcionado novamente para a versão anterior da aplicaćão (Blue).
+O Deployment Blue Green parte da premissa que devemos sempre ter disponíveis dois ambientes. O primeiro (chamaremos de Blue) com a versão atual da aplicação, e o segundo (Green) com a nova versão da aplicaćão. Após o deployment, todo o tráfego é direcionado para a nova aplicaćão (Green) e caso se identifique-se problemas, o tráfego é direcionado novamente para a versão anterior da aplicaćão (Blue).
 
-![image](images/blue-green.png)
--- from <cite>https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/bluegreen-deployments.html</cite>
+![image](images/canary.webp)
+-- from <cite><https://opensource.com/article/17/5/colorful-deployments></cite>
 
-Com o Istio, podemos ter esse modelo de deployment através da disponibilizaćão de pesos no tráfego para as versões da aplicaćão.
+Com o Istio, podemos ter esse modelo de deployment através da disponibilização de pesos no tráfego para as versões da aplicação.
 
 ```yaml
-    gateway.yaml
-    ...    
-    route:
-    - destination:
-        host: world-app-svc
-        port:
-          number: 8080
-        subset: v1
-      weight: 100
-    - destination:
-        host: world-app-svc
-        port:
-          number: 8080
-        subset: v2
-      weight: 0
+    # virtual-service-blue-green.yaml
+    apiVersion: networking.istio.io/v1alpha3
+    kind: VirtualService
+    metadata:
+      name: world-vs
+    spec:
+      hosts:
+        - "*"
+      gateways:
+        - demo-gateway
+      http:
+        - match:
+            - uri:
+                prefix: /world/
+          route:
+            - destination:
+                host: world-app-svc
+                port:
+                  number: 8080
+                subset: v1
+              weight: 0
+            # Direcionará 100 do tráfego para a V2
+            - destination:
+                host: world-app-svc
+                port:
+                  number: 8080
+                subset: v2
+              weight: 100
+
 ```
 
+Aqui o importante são as regras de destino. Nessa versão da aplicação iremos direcionar 100% do tráfego para a v2 (Serviço **world-app-svc** com label **v2** já instalado anteriormente).
+
 #### Demo
- 
+
+Execute a instação do virtual service com a nova configuração:
+
+```sh
+# Instalação da aplicação de exemplo
+kubectl apply -f k8s/virtual-service-blue-green.yaml
+```
+
 ### Canário
 
-O Deployment Canário, também ocorre a dispobilizaćão dos dois ambientes (Blue e Green), porém somente uma pequena parte do tráfego é direcionado para nova versão. Nesse modelo pode-se adotar uma porcentagem do tráfego ou também podemos utilizar outras informaćões como Http Headers para a utilizacão dos beta testers.
+O Deployment Canário, também ocorre a dispobilização dos dois ambientes (Blue e Green), porém somente uma pequena parte do tráfego é direcionado para nova versão. Nesse modelo pode-se adotar uma porcentagem do tráfego ou também podemos utilizar outras informaćões como Http Headers para a utilizacão dos beta testers.
 
-![image](images/blue-green.png)
--- from <cite>https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/bluegreen-deployments.html</cite>
+![image](images/canary.webp)
+-- from <cite><https://opensource.com/article/17/5/colorful-deployments></cite>
 
 Demo:
 
@@ -626,7 +665,7 @@ Demo:
 
 ### Flagger
 
-#### [Instalaćão](https://docs.flagger.app/install/flagger-install-on-kubernetes):
+#### [Instalação](https://docs.flagger.app/install/flagger-install-on-kubernetes)
 
 Helm:
 
@@ -651,7 +690,6 @@ kubectl apply -k github.com/fluxcd/flagger//kustomize/istio
 
 #### Demo
 
-
 ```sh
 kubectl apply -f k8s/world-with-flagger.yaml
 
@@ -661,7 +699,6 @@ kubectl apply -f k8s/world-with-flagger-canary.yaml
 ```
 
 #### Status
-
 
 ```sh
 kubectl -n istio-system logs deployment/flagger --tail=100 | jq .msg

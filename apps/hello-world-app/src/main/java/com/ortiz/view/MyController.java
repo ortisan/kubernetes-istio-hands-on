@@ -16,7 +16,7 @@ public class MyController {
 
     @GetMapping("/hello-world/say-hello-world")
     public Mono<ResponseEntity> sayHelloWorldHello() {
-        return helloWorldService.sayHelloWorld().flatMap((String helloMessage )-> {
+        return helloWorldService.sayHelloWorld().flatMap((String helloMessage) -> {
             ResponseEntity body = ResponseEntity.status(HttpStatus.CREATED).body(helloMessage);
             return Mono.just(body);
         }).onErrorResume(exc -> {

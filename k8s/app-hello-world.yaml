@@ -35,7 +35,10 @@ spec:
     spec:
       containers:
         - name: hello-world-app
-          image: docker.io/tentativafc/hello-world-app:1.0.0-snapshot
+          image: docker.io/tentativafc/hello-world-app:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "1.0.0"

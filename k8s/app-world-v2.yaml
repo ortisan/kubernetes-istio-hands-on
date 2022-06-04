@@ -4,44 +4,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: world-app-svc
+  name: world-app-svc-v2
   labels:
     service: world-app-svc
+    version: v2
 spec:
   ports:
     - port: 8080
       name: http
   selector:
     app: world-app
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: world-app-v1
-  labels:
-    app: world-app
-    version: v1
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: world-app
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: world-app
-        version: v1
-    spec:
-      containers:
-        - name: world-app
-          image: docker.io/tentativafc/world-app:1.0.0-snapshot
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
-          env:
-            - name: PERCENTUAL_ERRO
-              value: "-1"
+    version: v2
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -64,10 +38,12 @@ spec:
     spec:
       containers:
         - name: world-app
-          image: docker.io/tentativafc/world-app:1.0.0-snapshot
+          image: docker.io/tentativafc/world-app:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "90"
+              value: "50"
+            - name: APP_VERSION
+              value: "2.0.0"

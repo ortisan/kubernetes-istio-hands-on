@@ -1,3 +1,4 @@
+--- # ---
 ##################################################################################################
 # World App Flagger
 ##################################################################################################
@@ -13,7 +14,6 @@
 #       name: http
 #   selector:
 #     app: world-app-flagger
-# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,13 +32,13 @@ spec:
     spec:
       containers:
         - name: world-app-flagger
-          image: docker.io/tentativafc/world-app:1.0.0-snapshot
+          image: docker.io/tentativafc/world-app:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "-1"
+              value: "-10"
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler

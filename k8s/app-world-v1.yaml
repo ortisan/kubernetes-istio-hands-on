@@ -1,41 +1,48 @@
 ##################################################################################################
-# Hello App
+# World App
 ##################################################################################################
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-app-svc
+  name: world-app-svc-v1
   labels:
-    service: hello-app-svc
+    service: world-app-svc
+    version: v1
 spec:
   ports:
     - port: 8080
       name: http
   selector:
-    app: hello-app
+    app: world-app
+    version: v1
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-app-v1
+  name: world-app-v1
   labels:
-    app: hello-app
+    app: world-app
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello-app
+      app: world-app
       version: v1
   template:
     metadata:
       labels:
-        app: hello-app
+        app: world-app
         version: v1
     spec:
       containers:
-        - name: hello-app
-          image: docker.io/tentativafc/hello-app:1.0.0-snapshot
+        - name: world-app
+          image: docker.io/tentativafc/world-app:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          env:
+            - name: PERCENTUAL_ERRO
+              value: "0"
+            - name: APP_VERSION
+              value: "1.0.0"

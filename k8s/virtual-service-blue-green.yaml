@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: world-vs
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - demo-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /world/
+      route:
+        - destination:
+            host: world-app-svc
+            port:
+              number: 8080
+            subset: v1
+          weight: 0
+        # Direcionará 100 do tráfego para a v2
+        - destination:
+            host: world-app-svc
+            port:
+              number: 8080
+            subset: v2
+          weight: 100
