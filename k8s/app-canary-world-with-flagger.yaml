@@ -51,6 +51,7 @@ spec:
     # canary increment step
     # percentage (0-100)
     stepWeight: 10
+    # https://github.com/fluxcd/flagger/blob/main/pkg/metrics/observers/istio.go
     metrics:
       - name: request-success-rate
         # minimum req success rate (non 5xx responses)

@@ -1,5 +1,5 @@
 ##################################################################################################
-# World App v2 - ERROR RATE 0% -  Will be Promoted
+# World App v3 - ERROR RATE 50% -  Will be Roolback
 ##################################################################################################
 apiVersion: apps/v1
 kind: Deployment
@@ -16,7 +16,7 @@ spec:
     metadata:
       labels:
         app: world-app
-        version: v2
+        version: v3
     spec:
       containers:
         - name: world-app
@@ -26,6 +26,6 @@ spec:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "0"
+              value: "50"
             - name: APP_VERSION
-              value: "2.0.0"
+              value: "3.0.0"

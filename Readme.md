@@ -707,32 +707,42 @@ kubectl apply -k github.com/fluxcd/flagger//kustomize/istio
 
 Deletar todas as versões já instaladas.
 
-Após isso, instale a v1 com o comando abaixo. A primeira versão, é considerada a **primary**.
+##### V1
+
+A **V1** não possui taxa de erro. Por ela ser a primeira a ser instalada, ela será considerada **primary**(versão estável).  
+
+Para a instalação, execute os comandos abaixo:
 
 ```sh
-# https://github.com/fluxcd/flagger/blob/main/pkg/metrics/observers/istio.go
 # Install service and deployment. 
 kubectl apply -f k8s/app-world-flagger-v1.yaml
 # Install Flagger canary objects
 kubectl apply -f k8s/app-canary-world-with-flagger.yaml
 ```
 
-Instale a V2. Esse comando irá startar o deploy canário.
+##### V2
+
+A **V2** também não lançará erros, pois foi configurada com taxa de erro em 0%. Note que as versões posteriores, são configuradas como **canary**. Elas serão testadas através das métricas definidas, e caso não apresente falhas, será promovida, tornando-se **primary**.
+O comando à seguir irá iniciar o deploy canário.
 
 ```sh
-# Install service and deployment. 
+# Install deployment. 
 kubectl apply -f k8s/app-world-flagger-v2.yaml
 ```
 
-#### Status
+#### Checando Status
 
 ```sh
+# Lista os logs das mensagens de deployment do flagger
 kubectl -n istio-system logs deployment/flagger --tail=100 | jq .msg
 
+# Lista todos os canários (Flagger CRD)
 kubectl get canaries --all-namespaces
 
+# Exibe os detalhes do canário word-app
 kubectl -n default get canary/world-app -oyaml | awk '/status/,0'
 
+# Pausa o comando até estar na condição promoted. Muito utilizado em esteiras CI/CD
 kubectl wait canary/world-app --for=condition=promoted
 ```
 
@@ -743,4 +753,19 @@ kubectl wait canary/world-app --for=condition=promoted
 -- from <cite>author</cite>
 
 ![image](images/flagger-canary-kiali-success.png)
+-- from <cite>author</cite>
+
+##### V3
+
+A **V3** foi configurada com a taxa de erro de 50%. Por ser um taxa superior ao permitido (5%), o deploy não será evoluido, ocorrendo ao final o rollback.
+
+```sh
+# Install service and deployment. 
+kubectl apply -f k8s/app-world-flagger-v3.yaml
+```
+
+![image](images/flagger-canary-error.png)
+-- from <cite>author</cite>
+
+![image](images/flagger-canary-error-kiali.png)
 -- from <cite>author</cite>
