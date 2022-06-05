@@ -584,9 +584,10 @@ Abordaremos aqui os dois modelos de deployments mais utilizados no mercado.
 
 ### [Blue Green](https://martinfowler.com/bliki/BlueGreenDeployment.html)
 
-O Deployment Blue Green parte da premissa que devemos sempre ter disponíveis dois ambientes. O primeiro (chamaremos de Blue) com a versão atual da aplicação, e o segundo (Green) com a nova versão da aplicaćão. Após o deployment, todo o tráfego é direcionado para a nova aplicaćão (Green) e caso se identifique-se problemas, o tráfego é direcionado novamente para a versão anterior da aplicaćão (Blue).
+O Deployment Blue Green parte da premissa que devemos sempre ter disponíveis dois ambientes. O primeiro (chamaremos de Blue) com a versão atual da aplicação, e o segundo (Green) com a nova versão da aplicaćão. Após o deployment, todo o tráfego é direcionado para a nova aplicaćão (Green) e caso se identifique-se problemas, o tráfego é direcionado novamente para a versão anterior da aplicação (Blue).
 
 ![image](images/canary.webp)
+
 -- from <cite><https://opensource.com/article/17/5/colorful-deployments></cite>
 
 Com o Istio, podemos ter esse modelo de deployment através da disponibilização de pesos no tráfego para as versões da aplicação.
@@ -652,6 +653,7 @@ kubectl apply -f k8s/virtual-service-blue-green.yaml
 O Deployment Canário, também ocorre a dispobilização dos dois ambientes (Blue e Green), porém somente uma pequena parte do tráfego é direcionado para nova versão. Nesse modelo pode-se adotar uma porcentagem do tráfego ou também podemos utilizar outras informaćões como Http Headers para a utilizacão dos beta testers.
 
 ![image](images/canary.webp)
+
 -- from <cite><https://opensource.com/article/17/5/colorful-deployments></cite>
 
 Demo:
@@ -734,5 +736,11 @@ kubectl -n default get canary/world-app -oyaml | awk '/status/,0'
 kubectl wait canary/world-app --for=condition=promoted
 ```
 
+![image](images/flagger-canary-kiali.png)
+-- from <cite>author</cite>
+
 ![image](images/flagger-canary.png)
+-- from <cite>author</cite>
+
+![image](images/flagger-canary-kiali-success.png)
 -- from <cite>author</cite>
