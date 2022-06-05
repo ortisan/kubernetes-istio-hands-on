@@ -575,7 +575,7 @@ kubectl get hpa
 kubectl apply -f ./k8s/hpa-v2.yaml
 ```
 
-## Controle de deployments
+## Controle de deploys
 
 Um dos desafios do Countinous Delivery é garantir que o software com as novas features, funcionem corretamente.
 Há a necessidade portanto de estruturas de deployments que garantam a entrega das novas funcionalidades, que essas entregas não gerem indisponibilidade, que ocorram um teste pilotado em produção, e caso tudo esteja de acordo com os critérios de aceite, ocorra a liberaćão da nova versão para o restante do público.
@@ -592,35 +592,48 @@ O Deployment Blue Green parte da premissa que devemos sempre ter disponíveis do
 Com o Istio, podemos ter esse modelo de deployment através da disponibilização de pesos no tráfego para as versões da aplicação.
 
 ```yaml
-    # virtual-service-blue-green.yaml
-    apiVersion: networking.istio.io/v1alpha3
-    kind: VirtualService
-    metadata:
-      name: world-vs
-    spec:
-      hosts:
-        - "*"
-      gateways:
-        - demo-gateway
-      http:
-        - match:
-            - uri:
-                prefix: /world/
-          route:
-            - destination:
-                host: world-app-svc
-                port:
-                  number: 8080
-                subset: v1
-              weight: 0
-            # Direcionará 100 do tráfego para a V2
-            - destination:
-                host: world-app-svc
-                port:
-                  number: 8080
-                subset: v2
-              weight: 100
-
+# virtual-service-blue-green.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: world-vs
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - demo-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /world/
+      route:
+        - destination:
+            host: world-app-svc
+            port:
+              number: 8080
+            subset: v1
+          weight: 0
+        # Direcionará 100 do tráfego para a v2
+        - destination:
+            host: world-app
+            port:
+              number: 8080
+            subset: v2
+          weight: 100
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: world-dr
+spec:
+  host: world-app-svc
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
 ```
 
 Aqui o importante são as regras de destino. Nessa versão da aplicação iremos direcionar 100% do tráfego para a v2 (Serviço **world-app-svc** com label **v2** já instalado anteriormente).
@@ -690,12 +703,23 @@ kubectl apply -k github.com/fluxcd/flagger//kustomize/istio
 
 #### Demo
 
+Deletar todas as versões já instaladas.
+
+Após isso, instale a v1 com o comando abaixo. A primeira versão, é considerada a **primary**.
+
 ```sh
-kubectl apply -f k8s/world-with-flagger.yaml
+# https://github.com/fluxcd/flagger/blob/main/pkg/metrics/observers/istio.go
+# Install service and deployment. 
+kubectl apply -f k8s/app-world-flagger-v1.yaml
+# Install Flagger canary objects
+kubectl apply -f k8s/app-canary-world-with-flagger.yaml
+```
 
-kubectl apply -f k8s/world-with-flagger-gateway.yaml
+Instale a V2. Esse comando irá startar o deploy canário.
 
-kubectl apply -f k8s/world-with-flagger-canary.yaml
+```sh
+# Install service and deployment. 
+kubectl apply -f k8s/app-world-flagger-v2.yaml
 ```
 
 #### Status
@@ -705,7 +729,10 @@ kubectl -n istio-system logs deployment/flagger --tail=100 | jq .msg
 
 kubectl get canaries --all-namespaces
 
-kubectl -n default get canary/world-app-flagger -oyaml | awk '/status/,0'
+kubectl -n default get canary/world-app -oyaml | awk '/status/,0'
 
-kubectl wait canary/world-app-flagger --for=condition=promoted
+kubectl wait canary/world-app --for=condition=promoted
 ```
+
+![image](images/flagger-canary.png)
+-- from <cite>author</cite>

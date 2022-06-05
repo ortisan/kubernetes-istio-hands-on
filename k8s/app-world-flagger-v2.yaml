@@ -1,33 +1,17 @@
 ##################################################################################################
-# World App
+# World App v2 - ERROR RATE 0 -  Will be Promoted
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: world-app-svc
-  labels:
-    service: world-app-svc
-spec:
-  ports:
-    - port: 8080
-      name: http
-  selector:
-    app: world-app
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: world-app-v2
+  name: world-app
   labels:
     app: world-app
-    version: v2
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: world-app
-      version: v2
   template:
     metadata:
       labels:
@@ -42,6 +26,6 @@ spec:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "50"
+              value: "0"
             - name: APP_VERSION
               value: "2.0.0"

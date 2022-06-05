@@ -4,17 +4,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: world-app-svc-v1
+  name: world-app-svc
   labels:
     service: world-app-svc
-    version: v1
 spec:
   ports:
     - port: 8080
       name: http
   selector:
     app: world-app
-    version: v1
 ---
 apiVersion: apps/v1
 kind: Deployment

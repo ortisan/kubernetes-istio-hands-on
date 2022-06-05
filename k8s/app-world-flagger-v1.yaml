@@ -1,12 +1,12 @@
 ##################################################################################################
-# World App
+# World App v1 - ERROR RATE 0 -  Will be Primary
 ##################################################################################################
 apiVersion: v1
 kind: Service
 metadata:
-  name: world-app-svc
+  name: world-app
   labels:
-    service: world-app-svc
+    service: world-app
 spec:
   ports:
     - port: 8080
@@ -18,21 +18,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: world-app-v2
+  name: world-app
   labels:
     app: world-app
-    version: v2
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: world-app
-      version: v2
   template:
     metadata:
       labels:
         app: world-app
-        version: v2
+        version: v1
     spec:
       containers:
         - name: world-app
@@ -42,6 +40,6 @@ spec:
             - containerPort: 8080
           env:
             - name: PERCENTUAL_ERRO
-              value: "50"
+              value: "0"
             - name: APP_VERSION
-              value: "2.0.0"
+              value: "1.0.0"

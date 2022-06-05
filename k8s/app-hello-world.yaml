@@ -42,3 +42,8 @@ spec:
           env:
             - name: APP_VERSION
               value: "1.0.0"
+            - name: HELLO_APP_URL
+              value: http://10.43.252.8:80/hello/say-hello
+
+            - name: WORLD_APP_URL
+              value: http://10.43.252.8:80/world/say-world
